@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'widgets/app_bottom_navigation_bar.dart';
 import 'screens/first_aid.dart';
 import 'screens/settings/settings_page.dart';
+import 'screens/contacts/contacts_page.dart';
 import 'providers/app_preferences_provider.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'Emergency App',
       debugShowCheckedModeBanner: false,
       themeMode: prefs.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      
+
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -109,13 +110,12 @@ class _AppShellState extends State<AppShell> {
     switch (index) {
       case 1:
         return const ExplorePage(key: ValueKey<int>(1));
+      case 2:
+        return const ContactsPage(key: ValueKey<int>(2));
       case 3:
         return const SettingsPage(key: ValueKey<int>(3));
       default:
-        return _DashboardPage(
-          key: ValueKey<int>(index),
-          data: _pages[index],
-        );
+        return _DashboardPage(key: ValueKey<int>(index), data: _pages[index]);
     }
   }
 
@@ -134,7 +134,10 @@ class _AppShellState extends State<AppShell> {
                   opacity: animation,
                   child: ScaleTransition(
                     scale: Tween<double>(begin: 0.96, end: 1.0).animate(
-                      CurvedAnimation(parent: animation, curve: Curves.easeOutQuint),
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOutQuint,
+                      ),
                     ),
                     child: child,
                   ),
@@ -150,10 +153,22 @@ class _AppShellState extends State<AppShell> {
             child: AppBottomNavigationBar(
               currentIndex: _selectedIndex,
               items: const [
-                AppBottomNavigationItem(icon: Icons.home_rounded, label: 'Home'),
-                AppBottomNavigationItem(icon: Icons.medical_services_rounded, label: 'First Aid'),
-                AppBottomNavigationItem(icon: Icons.contact_phone_rounded, label: 'Contact'),
-                AppBottomNavigationItem(icon: Icons.settings_rounded, label: 'Setting'),
+                AppBottomNavigationItem(
+                  icon: Icons.home_rounded,
+                  label: 'Home',
+                ),
+                AppBottomNavigationItem(
+                  icon: Icons.medical_services_rounded,
+                  label: 'First Aid',
+                ),
+                AppBottomNavigationItem(
+                  icon: Icons.contact_phone_rounded,
+                  label: 'Contact',
+                ),
+                AppBottomNavigationItem(
+                  icon: Icons.settings_rounded,
+                  label: 'Setting',
+                ),
               ],
               onTap: _onDestinationSelected,
             ),
@@ -193,9 +208,9 @@ class _DashboardPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: isDark 
-              ? [const Color(0xFF0F172A), const Color(0xFF1E293B)] 
-              : [const Color(0xFFF8FAFC), const Color(0xFFF1F5F9)],
+            colors: isDark
+                ? [const Color(0xFF0F172A), const Color(0xFF1E293B)]
+                : [const Color(0xFFF8FAFC), const Color(0xFFF1F5F9)],
           ),
         ),
         child: Padding(
@@ -225,7 +240,8 @@ class _DashboardPage extends StatelessWidget {
                           children: [
                             Text(
                               'Emergency App',
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
                                     color: colorScheme.primary,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -233,9 +249,12 @@ class _DashboardPage extends StatelessWidget {
                             const SizedBox(height: 4),
                             Text(
                               data.title,
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w800,
-                                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                                    color: isDark
+                                        ? const Color(0xFFF8FAFC)
+                                        : const Color(0xFF0F172A),
                                   ),
                             ),
                           ],
@@ -265,14 +284,18 @@ class _DashboardPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: data.color.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
                             'Active section',
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
                                   color: data.color,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -281,9 +304,12 @@ class _DashboardPage extends StatelessWidget {
                         const SizedBox(height: 18),
                         Text(
                           data.subtitle,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
                                 height: 1.5,
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF475569),
                               ),
                         ),
                         const SizedBox(height: 22),
@@ -321,9 +347,9 @@ class _DashboardPage extends StatelessWidget {
                         'Tap the bottom menu to switch pages with a smooth animated transition.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF64748B),
-                              height: 1.5,
-                            ),
+                          color: const Color(0xFF64748B),
+                          height: 1.5,
+                        ),
                       ),
                     ),
                   ),
@@ -378,16 +404,16 @@ class _QuickActionCard extends StatelessWidget {
           Text(
             title,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
-                ),
+              fontWeight: FontWeight.w700,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: const Color(0xFF64748B),
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: const Color(0xFF64748B)),
           ),
         ],
       ),
