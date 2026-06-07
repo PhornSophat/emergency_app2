@@ -11,7 +11,6 @@ class EmergencyContactsScreen extends StatefulWidget {
 }
 
 class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
-  ContactCategory _selected = ContactCategory.family;
   final _searchController = TextEditingController();
   String _query = '';
 
@@ -71,12 +70,9 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, i) {
               final cat = filtered[i];
-              final isSelected = cat == _selected;
               return _CategoryTile(
                 category: cat,
-                isSelected: isSelected,
                 onTap: () {
-                  setState(() => _selected = cat);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -93,16 +89,18 @@ class _EmergencyContactsScreenState extends State<EmergencyContactsScreen> {
   }
 }
 
-class _CategoryTile extends StatelessWidget {
-  const _CategoryTile({
-    required this.category,
-    required this.isSelected,
-    required this.onTap,
-  });
+class _CategoryTile extends StatefulWidget {
+  const _CategoryTile({required this.category, required this.onTap});
 
   final ContactCategory category;
-  final bool isSelected;
   final VoidCallback onTap;
+
+  @override
+  State<_CategoryTile> createState() => _CategoryTileState();
+}
+
+class _CategoryTileState extends State<_CategoryTile> {
+  bool _isPressed = false;
 
   static const _kRed = Color(0xFFDC2626);
 
@@ -110,38 +108,51 @@ class _CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '${category.label} emergency contacts',
-      child: InkWell(
-        borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
+      label: '${widget.category.label} emergency contacts',
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) {
+          setState(() => _isPressed = false);
+          widget.onTap();
+        },
+        onTapCancel: () => setState(() => _isPressed = false),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: isSelected ? _kRed : Colors.white,
+            color: _isPressed ? _kRed : Colors.white,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: isSelected ? _kRed : const Color(0xFFE0E0E0),
+              color: _isPressed ? _kRed : const Color(0xFFE0E0E0),
               width: 1.4,
             ),
+            boxShadow: _isPressed
+                ? [
+                    BoxShadow(
+                      color: _kRed.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [],
           ),
           child: Row(
             children: [
-              Text(category.emoji, style: const TextStyle(fontSize: 20)),
+              Text(widget.category.emoji, style: const TextStyle(fontSize: 20)),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  category.label,
+                  widget.category.label,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+                    color: _isPressed ? Colors.white : const Color(0xFF1A1A1A),
                   ),
                 ),
               ),
               Icon(
                 Icons.phone,
-                color: isSelected ? Colors.white : const Color(0xFF1A1A1A),
+                color: _isPressed ? Colors.white : const Color(0xFF1A1A1A),
                 size: 22,
               ),
             ],

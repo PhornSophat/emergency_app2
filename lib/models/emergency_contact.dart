@@ -6,6 +6,7 @@ class EmergencyContact {
     required this.category,
     this.address,
     this.hours,
+    this.imageUrl,
   });
 
   final String id;
@@ -14,15 +15,10 @@ class EmergencyContact {
   final ContactCategory category;
   final String? address;
   final String? hours;
+  final String? imageUrl;
 }
 
-enum ContactCategory {
-  police,
-  fire,
-  medical,
-  roadSafety,
-  family,
-}
+enum ContactCategory { police, fire, medical, roadSafety, family }
 
 extension ContactCategoryX on ContactCategory {
   String get label {
