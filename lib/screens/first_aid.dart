@@ -20,14 +20,14 @@ class FirstAidItem {
   });
 }
 
-class ExplorePage extends StatefulWidget {
-  const ExplorePage({super.key});
+class FirstAidPage extends StatefulWidget {
+  const FirstAidPage({super.key});
 
   @override
-  State<ExplorePage> createState() => _ExplorePageState();
+  State<FirstAidPage> createState() => _FirstAidPageState();
 }
 
-class _ExplorePageState extends State<ExplorePage> {
+class _FirstAidPageState extends State<FirstAidPage> {
   String _searchQuery = "";
   String _selectedCategory = "All";
 
@@ -195,12 +195,10 @@ class _ExplorePageState extends State<ExplorePage> {
             height: screenSize.height * 0.40,
             child: Container(
               decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80',
-                  ),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFDC2626), Color(0xFF991B1B)],
                 ),
               ),
               child: Container(
@@ -208,7 +206,10 @@ class _ExplorePageState extends State<ExplorePage> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black.withOpacity(0.2), Colors.black.withOpacity(0.0)],
+                    colors: [
+                      Colors.black.withValues(alpha: 0.2),
+                      Colors.black.withValues(alpha: 0.0),
+                    ],
                   ),
                 ),
               ),
