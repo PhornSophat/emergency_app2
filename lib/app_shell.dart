@@ -15,6 +15,33 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
 
+  static const List<_NavPage> _pages = [
+    _NavPage(
+      title: 'Home',
+      subtitle: 'Fast access to emergency tools and key actions.',
+      color: Color(0xFFDC2626),
+      icon: Icons.home_rounded,
+    ),
+    _NavPage(
+      title: 'First Aid',
+      subtitle: 'Quick guides and emergency care steps for urgent cases.',
+      color: Color(0xFFF97316),
+      icon: Icons.medical_services_rounded,
+    ),
+    _NavPage(
+      title: 'Contact',
+      subtitle: 'Reach trusted people and emergency services quickly.',
+      color: Color(0xFF0F766E),
+      icon: Icons.contact_phone_rounded,
+    ),
+    _NavPage(
+      title: 'Setting',
+      subtitle: 'Customize alerts, contacts, and app preferences.',
+      color: Color(0xFF334155),
+      icon: Icons.settings_rounded,
+    ),
+  ];
+
   static const _navItems = [
     AppBottomNavigationItem(icon: Icons.home_rounded, label: 'Home'),
     AppBottomNavigationItem(
@@ -25,7 +52,7 @@ class _AppShellState extends State<AppShell> {
       icon: Icons.contact_phone_rounded,
       label: 'Contact',
     ),
-    AppBottomNavigationItem(icon: Icons.settings_rounded, label: 'Settings'),
+    AppBottomNavigationItem(icon: Icons.settings_rounded, label: 'Setting'),
   ];
 
   void _onDestinationSelected(int index) {
@@ -36,7 +63,7 @@ class _AppShellState extends State<AppShell> {
   Widget _pageForIndex(int index) {
     return switch (index) {
       0 => const HomePage(),
-      1 => const FirstAidPage(key: ValueKey<int>(1)),
+      1 => const ExplorePage(key: ValueKey<int>(1)),
       2 => const ContactsPage(key: ValueKey<int>(2)),
       3 => const SettingsPage(key: ValueKey<int>(3)),
       _ => const HomePage(),
@@ -84,4 +111,18 @@ class _AppShellState extends State<AppShell> {
       ),
     );
   }
+}
+
+class _NavPage {
+  const _NavPage({
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.icon,
+  });
+
+  final String title;
+  final String subtitle;
+  final Color color;
+  final IconData icon;
 }

@@ -23,7 +23,7 @@ void main() {
     expect(find.text('Home'), findsWidgets);
     expect(find.text('First Aid'), findsWidgets);
     expect(find.text('Contact'), findsWidgets);
-    expect(find.text('Settings'), findsWidgets);
+    expect(find.text('Setting'), findsWidgets);
 
     await tester.tap(find.text('First Aid').last);
     await tester.pumpAndSettle();
@@ -35,7 +35,7 @@ void main() {
 
     expect(find.text('Emergency contacts'), findsOneWidget);
 
-    await tester.tap(find.text('Settings').last);
+    await tester.tap(find.text('Setting').last);
     await tester.pumpAndSettle();
 
     expect(find.text('App Preferences'), findsOneWidget);

@@ -20,14 +20,14 @@ class FirstAidItem {
   });
 }
 
-class FirstAidPage extends StatefulWidget {
-  const FirstAidPage({super.key});
+class ExplorePage extends StatefulWidget {
+  const ExplorePage({super.key});
 
   @override
-  State<FirstAidPage> createState() => _FirstAidPageState();
+  State<ExplorePage> createState() => _ExplorePageState();
 }
 
-class _FirstAidPageState extends State<FirstAidPage> {
+class _ExplorePageState extends State<ExplorePage> {
   String _searchQuery = "";
   String _selectedCategory = "All";
 
@@ -193,26 +193,36 @@ class _FirstAidPageState extends State<FirstAidPage> {
             left: 0,
             right: 0,
             height: screenSize.height * 0.40,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFDC2626), Color(0xFF991B1B)],
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.2),
-                      Colors.black.withValues(alpha: 0.0),
-                    ],
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, _, _) => const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFFDC2626), Color(0xFF991B1B)],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.2),
+                        Colors.black.withValues(alpha: 0.0),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
