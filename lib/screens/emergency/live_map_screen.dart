@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class LiveMapScreen extends StatefulWidget {
   const LiveMapScreen({super.key});
@@ -14,6 +14,8 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   final MapController _mapController = MapController();
   LatLng? _currentLocation;
 
+  static const _defaultCenter = LatLng(11.5564, 104.9282);
+
   @override
   void initState() {
     super.initState();
@@ -21,33 +23,37 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   }
 
   Future<void> _fetchLocation() async {
-    // 1. Check and Request Location Permission
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) return;
+    final permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
 
-    // 2. Get current position
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+    final position = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      ),
     );
 
-    // 3. Update state and move map
-    if (mounted) {
-      setState(() {
-        _currentLocation = LatLng(position.latitude, position.longitude);
-      });
-      _mapController.move(_currentLocation!, 15.0);
-    }
+    if (!mounted) return;
+
+    setState(() {
+      _currentLocation = LatLng(position.latitude, position.longitude);
+    });
+    _mapController.move(_currentLocation!, 15.0);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: Stack(
         children: [
           FlutterMap(
             mapController: _mapController,
-            options: MapOptions(
-              initialCenter: const LatLng(11.5564, 104.9282), // Default to Phnom Penh
+            options: const MapOptions(
+              initialCenter: _defaultCenter,
               initialZoom: 15.0,
             ),
             children: [
@@ -55,53 +61,69 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.emergency_app',
               ),
-              MarkerLayer(
-                markers: [
-                  if (_currentLocation != null)
+              if (_currentLocation != null)
+                MarkerLayer(
+                  markers: [
                     Marker(
                       point: _currentLocation!,
-                      child: const Icon(Icons.my_location, color: Colors.blue, size: 40),
+                      child: const Icon(
+                        Icons.my_location,
+                        color: Colors.blue,
+                        size: 40,
+                      ),
                     ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
-          
-          // UI Overlay
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
               padding: const EdgeInsets.all(30),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
               ),
               child: Column(
                 children: [
-                  const Text("Don't worry, we are coming", 
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Text(
+                    "Don't worry, we are coming",
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 10),
-                  const Text("Your current location is sharing to the emergency contacts.",
-                    textAlign: TextAlign.center),
+                  Text(
+                    'Your current location is sharing to the emergency contacts.',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: theme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                       onPressed: () => Navigator.pop(context),
-                      child: const Text("Cancel alert. I'm safe now", style: TextStyle(color: Colors.white)),
+                      child: const Text(
+                        "Cancel alert. I'm safe now",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import '../app_shell.dart'; // Correct import
+
+import '../app_shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -17,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Timer(const Duration(seconds: 3), () {
         if (mounted) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const AppShell()),
+            MaterialPageRoute(builder: (_) => const AppShell()),
           );
         }
       });
@@ -27,16 +29,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFDC2626),
+      backgroundColor: const Color(0xFFDC2626),
       body: Center(
-        // Added a simple TweenAnimationBuilder for a smooth entrance
-        child: TweenAnimationBuilder(
-          tween: Tween<double>(begin: 0, end: 1),
-          duration: Duration(seconds: 1),
-          builder: (context, double opacity, child) {
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: 1),
+          duration: const Duration(seconds: 1),
+          builder: (context, opacity, _) {
             return Opacity(
               opacity: opacity,
-              child: Text(
+              child: const Text(
                 'resQ',
                 style: TextStyle(
                   color: Colors.white,

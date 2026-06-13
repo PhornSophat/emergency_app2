@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/app_preferences_provider.dart'; // Ensure this exists
-import 'screens/home/home_screen.dart'; // Update path as needed
+import 'providers/app_preferences_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -30,14 +29,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFDC2626), brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFDC2626),
+          brightness: Brightness.light,
+        ),
         scaffoldBackgroundColor: const Color(0xFFF8FAFC),
         cardColor: Colors.white,
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        colorScheme: const ColorScheme.dark(primary: Color(0xFFEF4444), surface: Color(0xFF1E293B)),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFEF4444),
+          surface: Color(0xFF1E293B),
+        ),
         scaffoldBackgroundColor: const Color(0xFF0F172A),
         cardColor: const Color(0xFF1E293B),
       ),

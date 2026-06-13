@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'widgets/app_bottom_navigation_bar.dart';
-import 'screens/first_aid.dart';
-import 'screens/settings/settings_page.dart';
 import 'screens/contacts/contacts_page.dart';
-import 'screens/home/home_screen.dart'; // Ensure this path is correct based on your lib folder
+import 'screens/first_aid.dart';
+import 'screens/home/home_screen.dart';
+import 'screens/settings/settings_page.dart';
+import 'widgets/app_bottom_navigation_bar.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -42,27 +42,33 @@ class _AppShellState extends State<AppShell> {
     ),
   ];
 
+  static const _navItems = [
+    AppBottomNavigationItem(icon: Icons.home_rounded, label: 'Home'),
+    AppBottomNavigationItem(
+      icon: Icons.medical_services_rounded,
+      label: 'First Aid',
+    ),
+    AppBottomNavigationItem(
+      icon: Icons.contact_phone_rounded,
+      label: 'Contact',
+    ),
+    AppBottomNavigationItem(icon: Icons.settings_rounded, label: 'Setting'),
+  ];
+
   void _onDestinationSelected(int index) {
     if (index == _selectedIndex) return;
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
   }
 
-  Widget _getPageForIndex(int index) {
-  switch (index) {
-    case 0:
-      return const HomePage(); // Your new, dedicated Home Page
-    case 1:
-      return const ExplorePage(key: ValueKey<int>(1));
-    case 2:
-      return const ContactsPage(key: ValueKey<int>(2));
-    case 3:
-      return const SettingsPage(key: ValueKey<int>(3));
-    default:
-      return const HomePage();
+  Widget _pageForIndex(int index) {
+    return switch (index) {
+      0 => const HomePage(),
+      1 => const ExplorePage(key: ValueKey<int>(1)),
+      2 => const ContactsPage(key: ValueKey<int>(2)),
+      3 => const SettingsPage(key: ValueKey<int>(3)),
+      _ => const HomePage(),
+    };
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +94,7 @@ class _AppShellState extends State<AppShell> {
                   ),
                 );
               },
-              child: _getPageForIndex(_selectedIndex),
+              child: _pageForIndex(_selectedIndex),
             ),
           ),
           Positioned(
@@ -97,24 +103,7 @@ class _AppShellState extends State<AppShell> {
             right: 0,
             child: AppBottomNavigationBar(
               currentIndex: _selectedIndex,
-              items: const [
-                AppBottomNavigationItem(
-                  icon: Icons.home_rounded,
-                  label: 'Home',
-                ),
-                AppBottomNavigationItem(
-                  icon: Icons.medical_services_rounded,
-                  label: 'First Aid',
-                ),
-                AppBottomNavigationItem(
-                  icon: Icons.contact_phone_rounded,
-                  label: 'Contact',
-                ),
-                AppBottomNavigationItem(
-                  icon: Icons.settings_rounded,
-                  label: 'Setting',
-                ),
-              ],
+              items: _navItems,
               onTap: _onDestinationSelected,
             ),
           ),
