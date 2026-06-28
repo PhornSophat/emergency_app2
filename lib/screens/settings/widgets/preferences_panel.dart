@@ -22,13 +22,27 @@ class AppPreferencesPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final languageTitle = isKhmerSelected ? 'ភាសាកម្មវិធី' : 'App Language';
+    final languageSubtitle = isKhmerSelected
+        ? 'ភាសាខ្មែរ (Khmer)'
+        : 'English (EN)';
+    final darkThemeTitle = isKhmerSelected ? 'រូបរាងងងឹត' : 'Dark Theme';
+    final darkThemeSubtitle = isKhmerSelected
+        ? 'ផ្ទៃខ្មៅសម្រាប់ងាយមើលពេលយប់'
+        : 'Optimized dark tech visualization';
+    final locationTitle = isKhmerSelected
+        ? 'ចែករំលែកទីតាំង GPS'
+        : 'GPS Location Sharing';
+    final locationSubtitle = isKhmerSelected
+        ? 'ចែករំលែកទីតាំងជាមួយក្រុមជួយបន្ទាន់'
+        : 'Share location layout with local 119 dispatch';
 
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9), 
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
           width: 1.2,
         ),
       ),
@@ -40,11 +54,13 @@ class AppPreferencesPanel extends StatelessWidget {
             context: context,
             icon: Icons.language,
             iconColor: Colors.blue,
-            title: 'App Language',
-            subtitle: isKhmerSelected ? 'ភាសាខ្មែរ (Khmer)' : 'English (EN)',
+            title: languageTitle,
+            subtitle: languageSubtitle,
             trailing: Container(
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+                color: isDark
+                    ? const Color(0xFF111111)
+                    : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(4),
@@ -52,13 +68,13 @@ class AppPreferencesPanel extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _LanguageOptionButton(
-                    label: 'EN', 
-                    isSelected: !isKhmerSelected, 
+                    label: 'EN',
+                    isSelected: !isKhmerSelected,
                     onTap: () => onLanguageChanged(false),
                   ),
                   _LanguageOptionButton(
-                    label: 'KH', 
-                    isSelected: isKhmerSelected, 
+                    label: 'KH',
+                    isSelected: isKhmerSelected,
                     onTap: () => onLanguageChanged(true),
                   ),
                 ],
@@ -72,12 +88,12 @@ class AppPreferencesPanel extends StatelessWidget {
             context: context,
             icon: Icons.dark_mode,
             iconColor: Colors.purple,
-            title: 'Dark Theme',
-            subtitle: 'Optimized dark tech visualization',
+            title: darkThemeTitle,
+            subtitle: darkThemeSubtitle,
             trailing: Switch(
               value: isDarkMode,
-              activeColor: const Color(0xFFEF4444),
-              activeTrackColor: const Color(0xFFEF4444).withOpacity(0.4),
+              activeThumbColor: const Color(0xFFEF4444),
+              activeTrackColor: const Color(0xFFEF4444).withValues(alpha: 0.4),
               inactiveThumbColor: const Color(0xFF64748B),
               onChanged: onDarkModeChanged,
             ),
@@ -89,12 +105,12 @@ class AppPreferencesPanel extends StatelessWidget {
             context: context,
             icon: Icons.location_on,
             iconColor: Colors.green,
-            title: 'GPS Location Sharing',
-            subtitle: 'Share location layout with local 119 dispatch',
+            title: locationTitle,
+            subtitle: locationSubtitle,
             trailing: Switch(
               value: isLocationSharing,
-              activeColor: const Color(0xFFEF4444),
-              activeTrackColor: const Color(0xFFEF4444).withOpacity(0.4),
+              activeThumbColor: const Color(0xFFEF4444),
+              activeTrackColor: const Color(0xFFEF4444).withValues(alpha: 0.4),
               inactiveThumbColor: const Color(0xFF64748B),
               onChanged: onLocationChanged,
             ),
@@ -121,7 +137,7 @@ class AppPreferencesPanel extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(isDark ? 0.2 : 0.1), 
+              color: iconColor.withValues(alpha: isDark ? 0.2 : 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: iconColor, size: 20),
@@ -132,19 +148,23 @@ class AppPreferencesPanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title, 
+                  title,
                   style: TextStyle(
-                    fontSize: 14, 
-                    fontWeight: FontWeight.w700, 
-                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: isDark
+                        ? const Color(0xFFF8FAFC)
+                        : const Color(0xFF0F172A),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  subtitle, 
+                  subtitle,
                   style: TextStyle(
-                    fontSize: 11, 
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    fontSize: 11,
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B),
                   ),
                 ),
               ],
@@ -177,12 +197,18 @@ class _LanguageOptionButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? (isDark ? const Color(0xFF1E293B) : Colors.white) 
+          color: isSelected
+              ? (isDark ? const Color(0xFF1E293B) : Colors.white)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           boxShadow: isSelected && !isDark
-              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
               : null,
         ),
         child: Text(
@@ -190,8 +216,8 @@ class _LanguageOptionButton extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isSelected 
-                ? const Color(0xFFEF4444) 
+            color: isSelected
+                ? const Color(0xFFEF4444)
                 : (isDark ? const Color(0xFF64748B) : const Color(0xFF475569)),
           ),
         ),

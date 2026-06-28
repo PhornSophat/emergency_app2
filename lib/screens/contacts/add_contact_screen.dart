@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/emergency_contact.dart';
+import '../../providers/app_preferences_provider.dart';
 
 class AddContactScreen extends StatefulWidget {
   const AddContactScreen({super.key, required this.category});
@@ -50,10 +52,18 @@ class _AddContactScreenState extends State<AddContactScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Contact added successfully!'),
+          SnackBar(
+            content: Text(
+              Provider.of<AppPreferencesProvider>(
+                context,
+                listen: false,
+              ).translate(
+                'Contact added successfully!',
+                'បានបន្ថែមទំនាក់ទំនងដោយជោគជ័យ!',
+              ),
+            ),
             backgroundColor: _kRed,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -62,15 +72,19 @@ class _AddContactScreenState extends State<AddContactScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<AppPreferencesProvider>();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: const BackButton(color: _kRed),
-        title: const Text(
-          'Add Emergency contact',
-          style: TextStyle(
+        title: Text(
+          prefs.translate('Add Emergency contact', 'បន្ថែមទំនាក់ទំនងបន្ទាន់'),
+          style: const TextStyle(
             color: _kRed,
             fontWeight: FontWeight.w800,
             fontSize: 20,
@@ -85,56 +99,91 @@ class _AddContactScreenState extends State<AddContactScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Full Name
-              _buildLabel('Full Name'),
+              _buildLabel(prefs.translate('Full Name', 'ឈ្មោះពេញ'), isDark),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _nameController,
-                hintText: 'Enter Full Name',
+                hintText: prefs.translate('Enter Full Name', 'បញ្ចូលឈ្មោះពេញ'),
+                isDark: isDark,
                 validator: (v) {
-                  if (v?.isEmpty ?? true) return 'Name is required';
+                  if (v?.isEmpty ?? true) {
+                    return prefs.translate('Name is required', 'ត្រូវការឈ្មោះ');
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
 
               // Phone Number
-              _buildLabel('Phone Number'),
+              _buildLabel(
+                prefs.translate('Phone Number', 'លេខទូរស័ព្ទ'),
+                isDark,
+              ),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _phoneController,
-                hintText: 'Enter Phone number',
+                hintText: prefs.translate(
+                  'Enter Phone number',
+                  'បញ្ចូលលេខទូរស័ព្ទ',
+                ),
                 keyboardType: TextInputType.phone,
+                isDark: isDark,
                 validator: (v) {
-                  if (v?.isEmpty ?? true) return 'Phone number is required';
-                  if (v!.length < 7) return 'Enter a valid phone number';
+                  if (v?.isEmpty ?? true) {
+                    return prefs.translate(
+                      'Phone number is required',
+                      'ត្រូវការលេខទូរស័ព្ទ',
+                    );
+                  }
+                  if (v!.length < 7) {
+                    return prefs.translate(
+                      'Enter a valid phone number',
+                      'បញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ',
+                    );
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
 
               // Email
-              _buildLabel('Email'),
+              _buildLabel(prefs.translate('Email', 'អ៊ីមែល'), isDark),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _emailController,
                 hintText: 'example@gmail.com',
                 keyboardType: TextInputType.emailAddress,
+                isDark: isDark,
                 validator: (v) {
                   if (v?.isEmpty ?? true) return null;
-                  if (!v!.contains('@')) return 'Enter a valid email';
+                  if (!v!.contains('@')) {
+                    return prefs.translate(
+                      'Enter a valid email',
+                      'បញ្ចូលអ៊ីមែលត្រឹមត្រូវ',
+                    );
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
 
               // Relationship
-              _buildLabel('Relationship'),
+              _buildLabel(
+                prefs.translate('Relationship', 'ទំនាក់ទំនង'),
+                isDark,
+              ),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _relationshipController,
-                hintText: 'eg Sister',
+                hintText: prefs.translate('eg Sister', 'ឧ. បងស្រី'),
+                isDark: isDark,
                 validator: (v) {
-                  if (v?.isEmpty ?? true) return 'Relationship is required';
+                  if (v?.isEmpty ?? true) {
+                    return prefs.translate(
+                      'Relationship is required',
+                      'ត្រូវការទំនាក់ទំនង',
+                    );
+                  }
                   return null;
                 },
               ),
@@ -148,7 +197,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _kRed,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    disabledBackgroundColor: _kRed.withOpacity(0.5),
+                    disabledBackgroundColor: _kRed.withValues(alpha: 0.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(999),
                     ),
@@ -164,9 +213,9 @@ class _AddContactScreenState extends State<AddContactScreen> {
                             ),
                           ),
                         )
-                      : const Text(
-                          'Add contact',
-                          style: TextStyle(
+                      : Text(
+                          prefs.translate('Add contact', 'បន្ថែមទំនាក់ទំនង'),
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -181,11 +230,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
     );
   }
 
-  Widget _buildLabel(String label) {
+  Widget _buildLabel(String label, bool isDark) {
     return Text(
       label,
-      style: const TextStyle(
-        color: Color(0xFF1A1A1A),
+      style: TextStyle(
+        color: isDark ? Colors.white : const Color(0xFF111111),
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
@@ -195,6 +244,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String hintText,
+    required bool isDark,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
   }) {
@@ -202,16 +252,24 @@ class _AddContactScreenState extends State<AddContactScreen> {
       controller: controller,
       keyboardType: keyboardType,
       validator: validator,
+      style: TextStyle(color: isDark ? Colors.white : const Color(0xFF111111)),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Color(0xFFB0B0B0)),
+        hintStyle: TextStyle(
+          color: isDark ? const Color(0xFF8A8A8A) : const Color(0xFFB0B0B0),
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 12,
         ),
+        filled: true,
+        fillColor: isDark ? const Color(0xFF171717) : Colors.white,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _kRed, width: 1.4),
+          borderSide: BorderSide(
+            color: isDark ? const Color(0xFF2A2A2A) : _kRed,
+            width: 1.4,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

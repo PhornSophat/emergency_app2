@@ -6,9 +6,11 @@ class ContactsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F8),
-      body: const EmergencyContactsScreen(),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: const SafeArea(bottom: false, child: EmergencyContactsScreen()),
     );
   }
 }
