@@ -15,7 +15,9 @@ class AppPreferencesProvider with ChangeNotifier {
   bool get isKhmerSelected => _isKhmerSelected;
   bool get isDarkMode => _isDarkMode;
   bool get isLocationSharing => _isLocationSharing;
-  
+  Locale get locale =>
+      _isKhmerSelected ? const Locale('km') : const Locale('en');
+
   String get userName => _userName;
   String get bloodType => _bloodType;
   String get allergies => _allergies;

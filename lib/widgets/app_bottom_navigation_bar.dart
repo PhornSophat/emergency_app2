@@ -4,10 +4,14 @@ class AppBottomNavigationItem {
   const AppBottomNavigationItem({
     required this.icon,
     required this.label,
+    required this.khmerLabel,
   });
 
   final IconData icon;
   final String label;
+  final String khmerLabel;
+
+  String labelFor(bool isKhmer) => isKhmer ? khmerLabel : label;
 }
 
 class AppBottomNavigationBar extends StatelessWidget {
@@ -16,11 +20,13 @@ class AppBottomNavigationBar extends StatelessWidget {
     required this.currentIndex,
     required this.items,
     required this.onTap,
+    required this.isKhmerSelected,
   }) : assert(items.length > 1, 'Use at least two navigation items.');
 
   final int currentIndex;
   final List<AppBottomNavigationItem> items;
   final ValueChanged<int> onTap;
+  final bool isKhmerSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +61,10 @@ class AppBottomNavigationBar extends StatelessWidget {
                     ],
                   ),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: isCompact ? 8 : 12, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isCompact ? 8 : 12,
+                      vertical: 8,
+                    ),
                     child: Row(
                       children: List.generate(items.length, (index) {
                         final item = items[index];
@@ -66,6 +75,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                             item: item,
                             isSelected: isSelected,
                             compact: isCompact,
+                            isKhmerSelected: isKhmerSelected,
                             onTap: () => onTap(index),
                           ),
                         );
@@ -87,12 +97,14 @@ class _NavigationButton extends StatelessWidget {
     required this.item,
     required this.isSelected,
     required this.compact,
+    required this.isKhmerSelected,
     required this.onTap,
   });
 
   final AppBottomNavigationItem item;
   final bool isSelected;
   final bool compact;
+  final bool isKhmerSelected;
   final VoidCallback onTap;
 
   @override
@@ -105,7 +117,10 @@ class _NavigationButton extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 240),
           curve: Curves.easeOutCubic,
-          padding: EdgeInsets.symmetric(horizontal: compact ? 8 : 10, vertical: 6),
+          padding: EdgeInsets.symmetric(
+            horizontal: compact ? 8 : 10,
+            vertical: 6,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -124,12 +139,16 @@ class _NavigationButton extends StatelessWidget {
                 duration: const Duration(milliseconds: 240),
                 curve: Curves.easeOutCubic,
                 style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: compact ? 9 : 10,
-                      color: Colors.white,
-                      letterSpacing: 0,
-                    ),
-                child: Text(item.label),
+                  fontWeight: FontWeight.w700,
+                  fontSize: compact ? 9 : 10,
+                  color: Colors.white,
+                  letterSpacing: 0,
+                ),
+                child: Text(
+                  item.labelFor(isKhmerSelected),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

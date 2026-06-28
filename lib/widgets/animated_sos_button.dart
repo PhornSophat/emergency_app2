@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../providers/app_preferences_provider.dart';
 import '../screens/emergency/live_map_screen.dart';
 
 class AnimatedSOSButton extends StatefulWidget {
@@ -50,6 +52,8 @@ class _AnimatedSOSButtonState extends State<AnimatedSOSButton>
 
   @override
   Widget build(BuildContext context) {
+    final prefs = context.watch<AppPreferencesProvider>();
+
     return GestureDetector(
       onTapDown: (_) {
         HapticFeedback.heavyImpact();
@@ -80,7 +84,7 @@ class _AnimatedSOSButtonState extends State<AnimatedSOSButton>
               ),
               child: Center(
                 child: Text(
-                  _isTriggered ? 'SENT' : 'SOS',
+                  _isTriggered ? prefs.translate('SENT', 'បានផ្ញើ') : 'SOS',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'dart:math' as math;
 import 'package:provider/provider.dart';
 import '../../models/emergency_contact.dart';
 import '../../providers/app_preferences_provider.dart';
 import '../contacts/contact_list_screen.dart';
-import '../emergency/live_map_screen.dart';
+import '../../widgets/animated_sos_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,12 +23,16 @@ class HomePage extends StatelessWidget {
           Positioned(
             top: -100,
             right: -50,
-            child: _buildGlow(Colors.red.withValues(alpha: isDark ? 0.05 : 0.08)),
+            child: _buildGlow(
+              Colors.red.withValues(alpha: isDark ? 0.05 : 0.08),
+            ),
           ),
           Positioned(
             bottom: 50,
             left: -100,
-            child: _buildGlow(Colors.blue.withValues(alpha: isDark ? 0.05 : 0.06)),
+            child: _buildGlow(
+              Colors.blue.withValues(alpha: isDark ? 0.05 : 0.06),
+            ),
           ),
           SafeArea(
             child: LayoutBuilder(
@@ -40,11 +44,15 @@ class HomePage extends StatelessWidget {
                   ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight - 40,
+                      minHeight: math.max(0, constraints.maxHeight - 40),
                     ),
                     child: Column(
                       children: [
-                        _buildHeader(prefs.userName, textColor),
+                        _buildHeader(
+                          prefs.userName,
+                          prefs.translate('Welcome,', 'សូមស្វាគមន៍,'),
+                          textColor,
+                        ),
                         const SizedBox(height: 40),
                         Align(
                           alignment: Alignment.centerLeft,
@@ -61,7 +69,7 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        _buildCategoryGrid(context, textColor),
+                        _buildCategoryGrid(context, prefs, textColor),
                         const SizedBox(height: 40),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +110,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(String userName, Color textColor) {
+  Widget _buildHeader(String userName, String welcomeText, Color textColor) {
     return Row(
       children: [
         Container(
@@ -121,9 +129,9 @@ class HomePage extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Welcome,',
-              style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+            Text(
+              welcomeText,
+              style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
             ),
             Text(
               userName.toUpperCase(),
@@ -139,7 +147,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryGrid(BuildContext context, Color textColor) {
+  Widget _buildCategoryGrid(
+    BuildContext context,
+    AppPreferencesProvider prefs,
+    Color textColor,
+  ) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -151,42 +163,42 @@ class HomePage extends StatelessWidget {
         _buildCategoryTile(
           context,
           Icons.local_fire_department_rounded,
-          'Fire',
+          prefs.translate('Fire', 'អគ្គិភ័យ'),
           ContactCategory.fire,
           textColor,
         ),
         _buildCategoryTile(
           context,
           Icons.local_police_rounded,
-          'Police',
+          prefs.translate('Police', 'ប៉ូលិស'),
           ContactCategory.police,
           textColor,
         ),
         _buildCategoryTile(
           context,
           Icons.groups_rounded,
-          'Family',
+          prefs.translate('Family', 'គ្រួសារ'),
           ContactCategory.family,
           textColor,
         ),
         _buildCategoryTile(
           context,
           Icons.car_crash_rounded,
-          'Accident',
+          prefs.translate('Accident', 'គ្រោះថ្នាក់'),
           ContactCategory.roadSafety,
           textColor,
         ),
         _buildCategoryTile(
           context,
           Icons.medical_services_rounded,
-          'Medical',
+          prefs.translate('Medical', 'វេជ្ជសាស្ត្រ'),
           ContactCategory.medical,
           textColor,
         ),
         _buildCategoryTile(
           context,
           Icons.traffic_rounded,
-          'Road',
+          prefs.translate('Road', 'ផ្លូវ'),
           ContactCategory.roadSafety,
           textColor,
         ),
@@ -225,100 +237,6 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
                 color: textColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedSOSButton extends StatefulWidget {
-  const AnimatedSOSButton({super.key});
-
-  @override
-  State<AnimatedSOSButton> createState() => _AnimatedSOSButtonState();
-}
-
-class _AnimatedSOSButtonState extends State<AnimatedSOSButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  bool _isTriggered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTapUp(TapUpDetails _) {
-    if (_controller.value >= 1.0) {
-      setState(() => _isTriggered = true);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const LiveMapScreen()),
-      ).then((_) {
-        if (mounted) {
-          setState(() {
-            _isTriggered = false;
-            _controller.reset();
-          });
-        }
-      });
-    } else {
-      _controller.reverse();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) {
-        HapticFeedback.heavyImpact();
-        _controller.forward();
-      },
-      onTapUp: _onTapUp,
-      onTapCancel: () => _controller.reverse(),
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) => Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              height: 150,
-              width: 150,
-              child: CircularProgressIndicator(
-                value: _controller.value,
-                color: Colors.redAccent,
-                strokeWidth: 8,
-              ),
-            ),
-            Container(
-              height: 120,
-              width: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _isTriggered ? Colors.orange : Colors.red,
-              ),
-              child: Center(
-                child: Text(
-                  _isTriggered ? 'SENT' : 'SOS',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
               ),
             ),
           ],

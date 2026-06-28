@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/emergency_contact.dart';
 import '../../data/contacts_data.dart';
+import '../../providers/app_preferences_provider.dart';
 import 'add_contact_screen.dart';
 
 class ContactListScreen extends StatefulWidget {
@@ -20,6 +22,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
   static const _kRed = Color(0xFFDC2626);
 
   List<EmergencyContact> get _contacts {
+    final isKhmer = context.read<AppPreferencesProvider>().isKhmerSelected;
     final all = kEmergencyContacts
         .where((c) => c.category == widget.category)
         .toList();
@@ -27,7 +30,14 @@ class _ContactListScreenState extends State<ContactListScreen> {
     return all
         .where(
           (c) =>
-              c.name.toLowerCase().contains(_query.toLowerCase()) ||
+              c
+                  .displayNameFor(isKhmer)
+                  .toLowerCase()
+                  .contains(_query.toLowerCase()) ||
+              c.category
+                  .labelFor(isKhmer)
+                  .toLowerCase()
+                  .contains(_query.toLowerCase()) ||
               c.phone.contains(_query),
         )
         .toList();
@@ -39,9 +49,16 @@ class _ContactListScreenState extends State<ContactListScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Could not call $phone')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.read<AppPreferencesProvider>().translate(
+                'Could not call $phone',
+                'មិនអាចហៅទៅលេខ $phone បានទេ',
+              ),
+            ),
+          ),
+        );
       }
     }
   }
@@ -56,16 +73,20 @@ class _ContactListScreenState extends State<ContactListScreen> {
   Widget build(BuildContext context) {
     final contacts = _contacts;
     final isFamily = widget.category == ContactCategory.family;
+    final prefs = context.watch<AppPreferencesProvider>();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final categoryLabel = widget.category.labelFor(prefs.isKhmerSelected);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: const BackButton(color: _kRed),
-        title: const Text(
-          'Emergency contacts',
-          style: TextStyle(
+        title: Text(
+          prefs.translate('Emergency contacts', 'ទំនាក់ទំនងបន្ទាន់'),
+          style: const TextStyle(
             color: _kRed,
             fontWeight: FontWeight.w800,
             fontSize: 20,
@@ -81,13 +102,18 @@ class _ContactListScreenState extends State<ContactListScreen> {
               controller: _searchController,
               onChanged: (v) => setState(() => _query = v),
               decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: const TextStyle(color: Color(0xFFB0B0B0)),
+                hintText: prefs.translate('Search', 'ស្វែងរក'),
+                hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                 prefixIcon: const Icon(Icons.search, color: Color(0xFFB0B0B0)),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                filled: true,
+                fillColor: theme.cardColor,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(999),
-                  borderSide: const BorderSide(color: _kRed, width: 1.4),
+                  borderSide: BorderSide(
+                    color: isDark ? const Color(0xFF334155) : _kRed,
+                    width: 1.4,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(999),
@@ -103,17 +129,26 @@ class _ContactListScreenState extends State<ContactListScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  widget.category.emoji,
-                  style: const TextStyle(fontSize: 22),
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: widget.category.color.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    widget.category.icon,
+                    color: widget.category.color,
+                    size: 24,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  widget.category.label,
-                  style: const TextStyle(
+                  categoryLabel,
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF1A1A1A),
+                    color: isDark ? Colors.white : const Color(0xFF1A1A1A),
                   ),
                 ),
               ],
@@ -123,21 +158,25 @@ class _ContactListScreenState extends State<ContactListScreen> {
           // Contact list
           Expanded(
             child: contacts.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
-                      'No contacts found.',
-                      style: TextStyle(color: Color(0xFF9E9E9E)),
+                      prefs.translate(
+                        'No contacts found.',
+                        'រកមិនឃើញទំនាក់ទំនងទេ។',
+                      ),
+                      style: const TextStyle(color: Color(0xFF9E9E9E)),
                     ),
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
                     itemCount: contacts.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
                     itemBuilder: (context, i) {
                       final c = contacts[i];
                       return _ContactCard(
                         contact: c,
                         showAvatar: isFamily,
+                        isKhmerSelected: prefs.isKhmerSelected,
                         onCall: () => _call(c.phone),
                       );
                     },
@@ -166,11 +205,13 @@ class _ContactCard extends StatelessWidget {
   const _ContactCard({
     required this.contact,
     required this.showAvatar,
+    required this.isKhmerSelected,
     required this.onCall,
   });
 
   final EmergencyContact contact;
   final bool showAvatar;
+  final bool isKhmerSelected;
   final VoidCallback onCall;
 
   static const _kRed = Color(0xFFDC2626);
@@ -190,18 +231,26 @@ class _ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final displayName = contact.displayNameFor(isKhmerSelected);
+    final displayAddress = contact.displayAddressFor(isKhmerSelected);
+
     return Semantics(
-      label: '${contact.name}, ${contact.phone}. Tap phone button to call.',
+      label: '$displayName, ${contact.phone}.',
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE0E0E0), width: 1.2),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE0E0E0),
+              width: 1.2,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -226,12 +275,12 @@ class _ContactCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: _kRed.withOpacity(0.1),
+                          color: contact.category.color.withValues(alpha: 0.1),
                           child: Center(
                             child: Icon(
-                              Icons.image_not_supported,
-                              color: _kRed.withOpacity(0.5),
-                              size: 40,
+                              contact.category.icon,
+                              color: contact.category.color,
+                              size: 44,
                             ),
                           ),
                         );
@@ -252,9 +301,9 @@ class _ContactCard extends StatelessWidget {
                     if (showAvatar)
                       CircleAvatar(
                         radius: 26,
-                        backgroundColor: _avatarColor(contact.name),
+                        backgroundColor: _avatarColor(displayName),
                         child: Text(
-                          contact.name[0].toUpperCase(),
+                          displayName[0].toUpperCase(),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -268,22 +317,26 @@ class _ContactCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            contact.name,
-                            style: const TextStyle(
+                            displayName,
+                            style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 15,
-                              color: Color(0xFF1A1A1A),
+                              color: isDark
+                                  ? const Color(0xFFF8FAFC)
+                                  : const Color(0xFF1A1A1A),
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
-                          if (contact.address != null)
+                          if (displayAddress != null)
                             Text(
-                              contact.address!,
-                              style: const TextStyle(
+                              displayAddress,
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFF9E9E9E),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF64748B),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -296,9 +349,11 @@ class _ContactCard extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   contact.phone,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
-                                    color: Color(0xFF1A1A1A),
+                                    color: isDark
+                                        ? const Color(0xFFF8FAFC)
+                                        : const Color(0xFF1A1A1A),
                                     fontWeight: FontWeight.w500,
                                   ),
                                   maxLines: 1,
@@ -313,7 +368,9 @@ class _ContactCard extends StatelessWidget {
                     const SizedBox(width: 12),
                     Semantics(
                       button: true,
-                      label: 'Call ${contact.name}',
+                      label: isKhmerSelected
+                          ? 'ហៅទៅ $displayName'
+                          : 'Call $displayName',
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -322,9 +379,9 @@ class _ContactCard extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: _kRed.withOpacity(0.1),
+                              color: _kRed.withValues(alpha: 0.1),
                               border: Border.all(
-                                color: _kRed.withOpacity(0.3),
+                                color: _kRed.withValues(alpha: 0.3),
                                 width: 1.2,
                               ),
                               borderRadius: BorderRadius.circular(12),

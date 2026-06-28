@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import '../../providers/app_preferences_provider.dart';
 
 class LiveMapScreen extends StatefulWidget {
   const LiveMapScreen({super.key});
@@ -30,9 +32,7 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
     }
 
     final position = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
 
     if (!mounted) return;
@@ -46,6 +46,7 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final prefs = context.watch<AppPreferencesProvider>();
 
     return Scaffold(
       body: Stack(
@@ -91,14 +92,20 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
               child: Column(
                 children: [
                   Text(
-                    "Don't worry, we are coming",
+                    prefs.translate(
+                      "Don't worry, we are coming",
+                      'កុំបារម្ភ យើងកំពុងទៅហើយ',
+                    ),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Your current location is sharing to the emergency contacts.',
+                    prefs.translate(
+                      'Your current location is sharing to the emergency contacts.',
+                      'ទីតាំងបច្ចុប្បន្នរបស់អ្នកត្រូវបានចែករំលែកទៅកាន់ទំនាក់ទំនងបន្ទាន់។',
+                    ),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium,
                   ),
@@ -114,9 +121,12 @@ class _LiveMapScreenState extends State<LiveMapScreen> {
                         ),
                       ),
                       onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        "Cancel alert. I'm safe now",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        prefs.translate(
+                          "Cancel alert. I'm safe now",
+                          'បោះបង់ការជូនដំណឹង។ ឥឡូវខ្ញុំមានសុវត្ថិភាពហើយ',
+                        ),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

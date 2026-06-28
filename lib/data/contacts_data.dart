@@ -1,262 +1,304 @@
 import '../models/emergency_contact.dart';
 
+const _policeImage =
+    'https://source.unsplash.com/600x360/?police-car,emergency';
+const _fireImage =
+    'https://source.unsplash.com/600x360/?fire-truck,firefighter';
+const _medicalImage = 'https://source.unsplash.com/600x360/?ambulance,hospital';
+const _roadSafetyImage =
+    'https://source.unsplash.com/600x360/?road-accident,traffic-safety';
+
 const List<EmergencyContact> kEmergencyContacts = [
   // Police
   EmergencyContact(
     id: 'p1',
     name: 'National Police Hotline',
+    nameKm: 'លេខបន្ទាន់នគរបាលជាតិ',
     phone: '117',
     category: ContactCategory.police,
     address: 'Phnom Penh, Cambodia',
+    addressKm: 'ភ្នំពេញ កម្ពុជា',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1516228145159-63ce9e07b5a9?w=400&h=300&fit=crop',
+    imageUrl: _policeImage,
   ),
   EmergencyContact(
     id: 'p2',
     name: 'Phnom Penh Police HQ',
+    nameKm: 'ស្នងការដ្ឋាននគរបាលរាជធានីភ្នំពេញ',
     phone: '023-720-704',
     category: ContactCategory.police,
     address: 'St 47, Sangkat Boeung Raingsey, Khan Daun Penh',
+    addressKm: 'ផ្លូវ 47 សង្កាត់បឹងរាំង ខណ្ឌដូនពេញ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=300&fit=crop',
+    imageUrl: _policeImage,
   ),
   EmergencyContact(
     id: 'p3',
     name: 'Tourist Police',
+    nameKm: 'នគរបាលទេសចរណ៍',
     phone: '012-942-484',
     category: ContactCategory.police,
     address: 'Sisowath Quay, Sangkat Chaktomuk, Khan Daun Penh',
+    addressKm: 'មាត់ទន្លេស៊ីសុវត្ថិ សង្កាត់ចតុមុខ ខណ្ឌដូនពេញ',
     hours: '07:00–22:00',
-    imageUrl:
-        'https://images.unsplash.com/photo-1516228145159-63ce9e07b5a9?w=400&h=300&fit=crop',
+    imageUrl: _policeImage,
   ),
   EmergencyContact(
     id: 'p4',
     name: 'BKK1 Police Post',
+    nameKm: 'ប៉ុស្តិ៍នគរបាលបឹងកេងកង 1',
     phone: '023-994-117',
     category: ContactCategory.police,
     address: 'St 63, Sangkat Boeung Keng Kang I, Khan Chamkarmon',
+    addressKm: 'ផ្លូវ 63 សង្កាត់បឹងកេងកងទី 1 ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=300&fit=crop',
+    imageUrl: _policeImage,
   ),
   EmergencyContact(
     id: 'p5',
     name: 'Toul Kork Police',
+    nameKm: 'នគរបាលទួលគោក',
     phone: '023-881-117',
     category: ContactCategory.police,
     address: 'St 192, Sangkat Phsar Daeum Thkov, Khan Toul Kork',
+    addressKm: 'ផ្លូវ 192 សង្កាត់ផ្សារដើមថ្កូវ ខណ្ឌទួលគោក',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1516228145159-63ce9e07b5a9?w=400&h=300&fit=crop',
+    imageUrl: _policeImage,
   ),
 
   // Fire
   EmergencyContact(
     id: 'f1',
     name: 'Fire Department Hotline',
+    nameKm: 'លេខបន្ទាន់ពន្លត់អគ្គិភ័យ',
     phone: '118',
     category: ContactCategory.fire,
     address: 'Phnom Penh, Cambodia',
+    addressKm: 'ភ្នំពេញ កម្ពុជា',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+    imageUrl: _fireImage,
   ),
   EmergencyContact(
     id: 'f2',
     name: 'Central Fire Station',
+    nameKm: 'ស្ថានីយពន្លត់អគ្គិភ័យកណ្តាល',
     phone: '023-430-118',
     category: ContactCategory.fire,
     address: 'St 102, Sangkat Boeung Trabek, Khan Chamkarmon',
+    addressKm: 'ផ្លូវ 102 សង្កាត់បឹងត្របែក ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+    imageUrl: _fireImage,
   ),
   EmergencyContact(
     id: 'f3',
     name: 'BKK Fire Station',
+    nameKm: 'ស្ថានីយពន្លត់អគ្គិភ័យបឹងកេងកង',
     phone: '023-988-118',
     category: ContactCategory.fire,
     address: 'St 63, Sangkat Boeung Keng Kang I, Khan Chamkarmon',
+    addressKm: 'ផ្លូវ 63 សង្កាត់បឹងកេងកងទី 1 ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+    imageUrl: _fireImage,
   ),
   EmergencyContact(
     id: 'f4',
     name: 'Toul Kork Fire Station',
+    nameKm: 'ស្ថានីយពន្លត់អគ្គិភ័យទួលគោក',
     phone: '023-882-118',
     category: ContactCategory.fire,
     address: 'St 192, Sangkat Phsar Daeum Thkov, Khan Toul Kork',
+    addressKm: 'ផ្លូវ 192 សង្កាត់ផ្សារដើមថ្កូវ ខណ្ឌទួលគោក',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+    imageUrl: _fireImage,
   ),
   EmergencyContact(
     id: 'f5',
     name: 'Sen Sok Fire Station',
+    nameKm: 'ស្ថានីយពន្លត់អគ្គិភ័យសែនសុខ',
     phone: '023-771-118',
     category: ContactCategory.fire,
     address: 'St 311, Sangkat Chrang Chamres, Khan Sen Sok',
+    addressKm: 'ផ្លូវ 311 សង្កាត់ច្រាំងចំរេះ ខណ្ឌសែនសុខ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop',
+    imageUrl: _fireImage,
   ),
 
   // Medical
   EmergencyContact(
     id: 'm1',
     name: 'Ambulance Service',
+    nameKm: 'សេវារថយន្តសង្គ្រោះ',
     phone: '119',
     category: ContactCategory.medical,
     address: 'Phnom Penh, Cambodia',
+    addressKm: 'ភ្នំពេញ កម្ពុជា',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1512842915884-53d5d3fd6f46?w=400&h=300&fit=crop',
+    imageUrl: _medicalImage,
   ),
   EmergencyContact(
     id: 'm2',
     name: 'Calmette Hospital',
+    nameKm: 'មន្ទីរពេទ្យកាល់ម៉ែត',
     phone: '023-430-115',
     category: ContactCategory.medical,
     address: 'Monivong Blvd, Sangkat Tonle Bassac, Khan Chamkarmon',
+    addressKm: 'មហាវិថីព្រះមុនីវង្ស សង្កាត់ទន្លេបាសាក់ ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=400&h=300&fit=crop',
+    imageUrl: _medicalImage,
   ),
   EmergencyContact(
     id: 'm3',
     name: 'Royal Phnom Penh Hospital',
+    nameKm: 'មន្ទីរពេទ្យរ៉ូយ៉ាល់ភ្នំពេញ',
     phone: '023-991-000',
     category: ContactCategory.medical,
     address: 'Samdech Techo Hun Sen Blvd, Sangkat Kakab, Khan Porsenchey',
+    addressKm: 'មហាវិថីសម្តេចតេជោ ហ៊ុន សែន សង្កាត់កាកាប ខណ្ឌពោធិ៍សែនជ័យ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=400&h=300&fit=crop',
+    imageUrl: _medicalImage,
   ),
   EmergencyContact(
     id: 'm4',
     name: 'Khmer-Soviet Friendship Hospital',
+    nameKm: 'មន្ទីរពេទ្យមិត្តភាពខ្មែរ-សូវៀត',
     phone: '023-883-000',
     category: ContactCategory.medical,
     address: 'St 352, Sangkat Boeng Keng Kang, Khan Chamkarmon',
+    addressKm: 'ផ្លូវ 352 សង្កាត់បឹងកេងកង ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=400&h=300&fit=crop',
+    imageUrl: _medicalImage,
   ),
   EmergencyContact(
     id: 'm5',
     name: 'National Pediatric Hospital',
+    nameKm: 'មន្ទីរពេទ្យកុមារជាតិ',
     phone: '023-426-748',
     category: ContactCategory.medical,
     address: 'St 113, Sangkat Boeng Trabek, Khan Chamkarmon',
+    addressKm: 'ផ្លូវ 113 សង្កាត់បឹងត្របែក ខណ្ឌចំការមន',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1631217314831-c6227db76b6e?w=400&h=300&fit=crop',
+    imageUrl: _medicalImage,
   ),
 
   // Road Safety
   EmergencyContact(
     id: 'r1',
     name: 'Road Accident Hotline',
+    nameKm: 'លេខបន្ទាន់គ្រោះថ្នាក់ចរាចរណ៍',
     phone: '1294',
     category: ContactCategory.roadSafety,
     address: 'Phnom Penh, Cambodia',
+    addressKm: 'ភ្នំពេញ កម្ពុជា',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1468276311594-df7cb65d8c75?w=400&h=300&fit=crop',
+    imageUrl: _roadSafetyImage,
   ),
   EmergencyContact(
     id: 'r2',
     name: 'Traffic Police HQ',
+    nameKm: 'ការិយាល័យនគរបាលចរាចរណ៍',
     phone: '023-720-704',
     category: ContactCategory.roadSafety,
     address: 'Confederation de la Russie Blvd, Sangkat Kakab, Khan Porsenchey',
+    addressKm: 'មហាវិថីសហព័ន្ធរុស្ស៊ី សង្កាត់កាកាប ខណ្ឌពោធិ៍សែនជ័យ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1468276311594-df7cb65d8c75?w=400&h=300&fit=crop',
+    imageUrl: _roadSafetyImage,
   ),
   EmergencyContact(
     id: 'r3',
     name: 'Road Rescue Cambodia',
+    nameKm: 'សង្គ្រោះផ្លូវថ្នល់កម្ពុជា',
     phone: '010-999-119',
     category: ContactCategory.roadSafety,
     address: 'Various Locations, Phnom Penh',
+    addressKm: 'ទីតាំងផ្សេងៗ ក្នុងរាជធានីភ្នំពេញ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1468276311594-df7cb65d8c75?w=400&h=300&fit=crop',
+    imageUrl: _roadSafetyImage,
   ),
   EmergencyContact(
     id: 'r4',
     name: 'Towing Service Phnom Penh',
+    nameKm: 'សេវាសណ្ដោងយានយន្តភ្នំពេញ',
     phone: '012-555-333',
     category: ContactCategory.roadSafety,
     address: 'Various Locations, Phnom Penh',
+    addressKm: 'ទីតាំងផ្សេងៗ ក្នុងរាជធានីភ្នំពេញ',
     hours: '24/7',
-    imageUrl:
-        'https://images.unsplash.com/photo-1468276311594-df7cb65d8c75?w=400&h=300&fit=crop',
+    imageUrl: _roadSafetyImage,
   ),
   EmergencyContact(
     id: 'r5',
     name: 'Insurance Assistance',
+    nameKm: 'ជំនួយធានារ៉ាប់រង',
     phone: '1800-888-888',
     category: ContactCategory.roadSafety,
     address: 'Multi-location, Cambodia',
+    addressKm: 'ច្រើនទីតាំង ក្នុងប្រទេសកម្ពុជា',
     hours: '08:00–20:00',
-    imageUrl:
-        'https://images.unsplash.com/photo-1468276311594-df7cb65d8c75?w=400&h=300&fit=crop',
+    imageUrl: _roadSafetyImage,
   ),
 
   // Family / Friends (profile pictures via initials)
   EmergencyContact(
     id: 'fam1',
     name: 'Dad',
+    nameKm: 'ឪពុក',
     phone: '012-555-0001',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam2',
     name: 'Mom',
+    nameKm: 'ម្តាយ',
     phone: '012-555-0002',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam3',
     name: 'Brother',
+    nameKm: 'បងប្អូនប្រុស',
     phone: '012-555-0003',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam4',
     name: 'Sister',
+    nameKm: 'បងប្អូនស្រី',
     phone: '012-555-0004',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam5',
     name: 'Grandmother',
+    nameKm: 'ជីដូន',
     phone: '012-555-0005',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam6',
     name: 'Uncle',
+    nameKm: 'ពូ',
     phone: '012-555-0006',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
   EmergencyContact(
     id: 'fam7',
     name: 'Best Friend',
+    nameKm: 'មិត្តជិតស្និទ្ធ',
     phone: '012-555-0007',
     category: ContactCategory.family,
     address: 'Phnom Penh',
+    addressKm: 'ភ្នំពេញ',
   ),
 ];
